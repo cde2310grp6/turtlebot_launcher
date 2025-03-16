@@ -38,9 +38,9 @@ ros2 run turtlebot_launcher launcher_service
 
 # Acknowledgements:
 * Instructors of CDE2310:
-- Mr Chew Wanlong, Nicholas
-- Mr Ee Wei Han, Eugene
-- Mr Royston Shieh Teng Wei
-- Mr Soh Eng Keng
+    * Mr Chew Wanlong, Nicholas
+    * Mr Ee Wei Han, Eugene
+    * Mr Royston Shieh Teng Wei
+    * Mr Soh Eng Keng
 
 * Teaching Assistants of CDE2310
