@@ -9,7 +9,7 @@ Written for NUS CDE2310 AY24/25.
 * std_srvs
 
 # Installation:
-* Create target folder within your workspace. (In this case, ros2_ws.)
+1. Create target folder within your workspace. (In this case, ros2_ws.)
 
 ```
 cd ~/ros2_ws
@@ -17,13 +17,13 @@ mkdir -p src/turtlebot_launcher
 cd src/turtlebot_launcher
 ```
 
-* Git clone repository into folder
+2. Git clone repository into folder
 
 ```
 git clone https://github.com/cde2310grp6/ball_launcher.git
 ```
 
-* Navigate back to workspace and build using colcon
+3. Navigate back to workspace and build using colcon
 
 ```
 cd ~/ros2_ws
