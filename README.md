@@ -4,7 +4,7 @@ ROS2 service to launch ping pong ball using flywheel-based launcher. Meant for T
 Written for NUS CDE2310 AY24/25. 
 
 # Dependencies: 
-* pigpio
+* RPi.GPIO
 * rclpy
 * std_srvs
 
