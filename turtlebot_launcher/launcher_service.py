@@ -2,56 +2,59 @@
 
 import rclpy
 from rclpy.node import Node
-import pigpio
-from std_srvs.srv import Trigger  #Simple service with no request arguments 
+import RPi.GPIO as GPIO
+from std_srvs.srv import Trigger  # Simple service with no request arguments
+import time
 
 # GPIO Pins
 FLYWHEEL_PWM = 12           # Single PWM control for both motors (wired in parallel)
 SERVO_PWM = 18              # Servo PWM control
 
 # Motor Variables
-motor_pwm_freq = 1000       # 1kHz PWM for motor
-motor_pwm_on_duty = 70          # 70% duty cycle for motor
+motor_pwm_freq = 1000       # PWM frequency for motor (e.g. 1000Hz)
+motor_pwm_on_duty = 70      # Duty cycle for motor in %. (e.g. 70)
 
 # Servo Variables
-servo_pwm_freq = 50         # 50Hz PWM for servo
-servo_pwm_duty_lower = 15       #value to scale down to 0 degree
-servo_pwm_duty_upper = 38       #value to scale up to 180 degree
+servo_pwm_freq = 50         # PWM frequency for servo (e.g. 50Hz)
+servo_pwm_duty_lower = 15   # value to scale down to 0 degree (0-255)
+servo_pwm_duty_upper = 38   # value to scale up to 180 degree (0-255)
 
-servo_launch_angle = 50     # Angle to launch ball
-servo_reset_angle = 0       # Angle to reset servo
-flywheel_spinup_time = 1    # Time to spin up flywheels
-flywheel_spindown_time = 1  # Time to slow down flywheels
-flywheel_launch_time = 0.5  # Time to launch ball
+servo_launch_angle = 50     # Angle to set servo to launch ball (0-180)
+servo_reset_angle = 0       # Angle to reset servo to (0-180)
+flywheel_spinup_time = 1    # Time needed to spin up flywheels
+flywheel_spindown_time = 1  # Time needed to slow down flywheels
+flywheel_launch_time = 0.5  # Time needed to launch ball
 
 # Conversion
-motor_pwm_on_duty_scaled = motor_pwm_on_duty/100*255
+motor_pwm_on_duty_scaled = motor_pwm_on_duty / 100 * 255
 
-# Initialize pigpio
-pi = pigpio.pi()
-if not pi.connected:
-    raise RuntimeError("Could not connect to pigpio daemon")
+# Initialize GPIO
+GPIO.setmode(GPIO.BCM)      # Use BCM numbering for GPIO pins
+GPIO.setup(FLYWHEEL_PWM, GPIO.OUT)
+GPIO.setup(SERVO_PWM, GPIO.OUT)
+
+flywheel_pwm = GPIO.PWM(FLYWHEEL_PWM, motor_pwm_freq)
+servo_pwm = GPIO.PWM(SERVO_PWM, servo_pwm_freq)
+
+flywheel_pwm.start(0)       # Initialise PWM at 0
+servo_pwm.start(0)
 
 def ServoMove(angle):
-    duty = (angle/180)*(servo_pwm_duty_upper-servo_pwm_duty_lower)+servo_pwm_duty_lower
-    pi.set_PWM_dutycycle(SERVO_PWM, duty) 
+    servo_duty = (angle / 180) * (servo_pwm_duty_upper - servo_pwm_duty_lower) + servo_pwm_duty_lower
+    servo_pwm.ChangeDutyCycle(servo_duty)
 
 def FlywheelStart():
-    pi.set_PWM_dutycycle(FLYWHEEL_PWM, motor_pwm_on_duty_scaled)  # Motors on
+    flywheel_pwm.ChangeDutyCycle(motor_pwm_on_duty)
 
 def FlywheelStop():
-    pi.set_PWM_dutycycle(FLYWHEEL_PWM, 0)  # Motors off
-    
+    flywheel_pwm.ChangeDutyCycle(0)
+
 class TurtleBotLauncher(Node):
     def __init__(self):
         super().__init__('turtlebot_launcher_service')
 
         # Create a ROS 2 service to trigger the launcher
         self.srv = self.create_service(Trigger, 'launch_ball', self.launch_ball_callback)
-
-        # Set up motor PWM (initially off)
-        pi.set_PWM_frequency(FLYWHEEL_PWM, motor_pwm_freq)  # Set Motor PWM frequency
-        pi.set_PWM_frequency(SERVO_PWM,servo_pwm_freq) # Set Servo PWM frequency
 
         self.get_logger().info("TurtleBot Launcher service is ready!")
 
@@ -66,16 +69,16 @@ class TurtleBotLauncher(Node):
 
         # Wait for motors to reach speed
         self.get_logger().info("Spinning up flywheels...")
-        self.get_clock().sleep_for(rclpy.duration.Duration(seconds=flywheel_spinup_time))
+        time.sleep(flywheel_spinup_time)
 
         # Move servo to launch the ball
         self.get_logger().info("Launching ball with servo...")
         ServoMove(servo_launch_angle)
-        self.get_clock().sleep_for(rclpy.duration.Duration(seconds=flywheel_launch_time)) # delay to allow ball to launch
+        time.sleep(flywheel_launch_time)  # delay to allow ball to launch
 
         # Stop flywheels after launch
         FlywheelStop()
-        self.get_clock().sleep_for(rclpy.duration.Duration(seconds=flywheel_spindown_time))
+        time.sleep(flywheel_spindown_time)
 
         # Reset servo to 0 degrees
         ServoMove(servo_reset_angle)
@@ -87,10 +90,16 @@ class TurtleBotLauncher(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = TurtleBotLauncher()
-    rclpy.spin(node)
-    pi.stop()  # Cleanup PWM on shutdown
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        flywheel_pwm.stop()
+        servo_pwm.stop()
+        GPIO.cleanup()
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()

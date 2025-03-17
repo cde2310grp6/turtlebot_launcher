@@ -2,14 +2,14 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>turtlebot_launcher</name>
-  <version>0.1.2</version>
+  <version>0.2.0</version>
   <description>Turtlebot 3 service for flywheel-based launcher</description>
   <maintainer email="kaijie.chong@gmail.com">Chong Kai Jie</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>std_srvs</depend>
-  <depend>pigpio</depend> 
+  <depend>RPi.GPIO</depend> 
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

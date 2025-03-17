@@ -4,7 +4,7 @@ package_name = 'turtlebot_launcher'
 
 setup(
     name=package_name,
-    version='0.1.2',
+    version='0.2.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -14,7 +14,7 @@ setup(
     install_requires=[
         'setuptools',
         'rclpy',
-        'pigpio',
+        'RPi.GPIO',
     ],
     zip_safe=True,
     maintainer='Chong Kai Jie',
