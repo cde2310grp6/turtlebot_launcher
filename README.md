@@ -36,7 +36,7 @@ ros2 run turtlebot_launcher launcher_service
 
 # Updating:
 
-enter the turtlebot_launcher folder
+Enter the turtlebot_launcher folder and git pull
 
 ```
 cd ~/ros2_ws/src.turtlebot_launcher
