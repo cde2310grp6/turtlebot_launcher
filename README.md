@@ -34,6 +34,15 @@ colcon build --packages-select turtlebot_launcher
 ros2 run turtlebot_launcher launcher_service 
 ```
 
+# Updating:
+
+enter the turtlebot_launcher folder
+
+```
+cd ~/ros2_ws/src.turtlebot_launcher
+git pull
+```
+
 # Acknowledgements:
 * Instructors of CDE2310:
     * Mr Chew Wanlong, Nicholas
