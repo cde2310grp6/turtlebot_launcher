@@ -9,18 +9,16 @@ Written for NUS CDE2310 AY24/25.
 * std_srvs
 
 # Installation:
-1. Create target folder within your workspace. (In this case, ros2_ws.)
+1. Navigate to source folder within your workspace. (In this case, ros2_ws.)
 
 ```
-cd ~/ros2_ws
-mkdir -p src/turtlebot_launcher
-cd src/turtlebot_launcher
+cd ~/ros2_ws/src
 ```
 
 2. Git clone repository into folder
 
 ```
-git clone https://github.com/cde2310grp6/ball_launcher.git
+git clone https://github.com/cde2310grp6/turtlebot_launcher.git
 ```
 
 3. Navigate back to workspace and build using colcon
