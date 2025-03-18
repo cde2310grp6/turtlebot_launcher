@@ -72,7 +72,7 @@ class TurtleBotLauncher(Node):
         # Move servo to launch the ball
         self.get_logger().info("Launching ball with servo...")
         self.ServoMove(servo_launch_angle)
-        time.sleep(flywheel_launch_time)  # Delay to allow ball to launch
+        time.sleep(flywheel_launch_time)  # Delay to allow servo to move
 
         # Stop flywheels after launch
         self.FlywheelStop()
@@ -80,6 +80,7 @@ class TurtleBotLauncher(Node):
 
         # Reset servo to 0 degrees
         self.ServoMove(servo_reset_angle)
+        time.sleep(flywheel_launch_time)  # Delay to allow servo to move
 
         response.success = True
         response.message = "Ball launched!"
