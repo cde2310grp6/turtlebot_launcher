@@ -16,8 +16,8 @@ motor_pwm_on_duty = 70      # Duty cycle for motor in %. (e.g. 70)
 
 # Servo Variables
 servo_pwm_freq = 50         # PWM frequency for servo (e.g. 50Hz)
-servo_pwm_duty_lower = 15   # value to scale down to 0 degree (0-255)
-servo_pwm_duty_upper = 38   # value to scale up to 180 degree (0-255)
+servo_pwm_duty_lower = 1.5   # value to scale down to 0 degree (0-255) (default value: 1.5)
+servo_pwm_duty_upper = 8.4   # value to scale up to 180 degree (0-255) (default value: 8.4)
 
 servo_launch_angle = 50     # Angle to set servo to launch ball (0-180)
 servo_reset_angle = 0       # Angle to reset servo to (0-180)
