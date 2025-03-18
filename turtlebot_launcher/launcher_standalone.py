@@ -62,7 +62,7 @@ time.sleep(flywheel_spinup_time)
 # Move servo to launch the ball
 print("Launching ball with servo...")
 ServoMove(servo_launch_angle)
-time.sleep(flywheel_launch_time)  # Delay to allow ball to launch
+time.sleep(flywheel_launch_time)  # Delay to allow servo to move
 
 # Stop flywheels after launch
 FlywheelStop()
@@ -70,3 +70,4 @@ time.sleep(flywheel_spindown_time)
 
 # Reset servo to 0 degrees
 ServoMove(servo_reset_angle)
+time.sleep(flywheel_launch_time)  # Delay to allow servo to move
