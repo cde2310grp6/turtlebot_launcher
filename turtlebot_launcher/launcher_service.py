@@ -25,29 +25,6 @@ flywheel_spinup_time = 1    # Time needed to spin up flywheels
 flywheel_spindown_time = 1  # Time needed to slow down flywheels
 flywheel_launch_time = 0.5  # Time needed to launch ball
 
-# Conversion
-motor_pwm_on_duty_scaled = motor_pwm_on_duty / 100 * 255
-
-# Initialize GPIO
-GPIO.setmode(GPIO.BCM)      # Use BCM numbering for GPIO pins
-GPIO.setup(FLYWHEEL_PWM, GPIO.OUT)
-GPIO.setup(SERVO_PWM, GPIO.OUT)
-
-flywheel_pwm = GPIO.PWM(FLYWHEEL_PWM, motor_pwm_freq)
-servo_pwm = GPIO.PWM(SERVO_PWM, servo_pwm_freq)
-
-flywheel_pwm.start(0)       # Initialise PWM at 0
-servo_pwm.start(0)
-
-def ServoMove(angle):
-    servo_duty = (angle / 180) * (servo_pwm_duty_upper - servo_pwm_duty_lower) + servo_pwm_duty_lower
-    servo_pwm.ChangeDutyCycle(servo_duty)
-
-def FlywheelStart():
-    flywheel_pwm.ChangeDutyCycle(motor_pwm_on_duty)
-
-def FlywheelStop():
-    flywheel_pwm.ChangeDutyCycle(0)
 
 class TurtleBotLauncher(Node):
     def __init__(self):
@@ -56,16 +33,37 @@ class TurtleBotLauncher(Node):
         # Create a ROS 2 service to trigger the launcher
         self.srv = self.create_service(Trigger, 'launch_ball', self.launch_ball_callback)
 
+        # Initialize GPIO
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(FLYWHEEL_PWM, GPIO.OUT)
+        GPIO.setup(SERVO_PWM, GPIO.OUT)
+
+        self.flywheel_pwm = GPIO.PWM(FLYWHEEL_PWM, motor_pwm_freq)
+        self.servo_pwm = GPIO.PWM(SERVO_PWM, servo_pwm_freq)
+
+        self.flywheel_pwm.start(0)  # Initialize PWM at 0
+        self.servo_pwm.start(0)
+
         self.get_logger().info("TurtleBot Launcher service is ready!")
+
+    def ServoMove(self, angle):
+        servo_duty = (angle / 180) * (servo_pwm_duty_upper - servo_pwm_duty_lower) + servo_pwm_duty_lower
+        self.servo_pwm.ChangeDutyCycle(servo_duty)
+
+    def FlywheelStart(self):
+        self.flywheel_pwm.ChangeDutyCycle(motor_pwm_on_duty)
+
+    def FlywheelStop(self):
+        self.flywheel_pwm.ChangeDutyCycle(0)
 
     def launch_ball_callback(self, request, response):
         self.get_logger().info("Received request to launch ball!")
 
         # Reset servo just in case it's not at 0 degrees
-        ServoMove(servo_reset_angle)
+        self.ServoMove(servo_reset_angle)
 
-        # Start flywheel motors (set PWM speed, e.g., 70%)
-        FlywheelStart()
+        # Start flywheel motors
+        self.FlywheelStart()
 
         # Wait for motors to reach speed
         self.get_logger().info("Spinning up flywheels...")
@@ -73,19 +71,25 @@ class TurtleBotLauncher(Node):
 
         # Move servo to launch the ball
         self.get_logger().info("Launching ball with servo...")
-        ServoMove(servo_launch_angle)
-        time.sleep(flywheel_launch_time)  # delay to allow ball to launch
+        self.ServoMove(servo_launch_angle)
+        time.sleep(flywheel_launch_time)  # Delay to allow ball to launch
 
         # Stop flywheels after launch
-        FlywheelStop()
+        self.FlywheelStop()
         time.sleep(flywheel_spindown_time)
 
         # Reset servo to 0 degrees
-        ServoMove(servo_reset_angle)
+        self.ServoMove(servo_reset_angle)
 
         response.success = True
         response.message = "Ball launched!"
         return response
+
+    def cleanup(self):
+        self.flywheel_pwm.stop()
+        self.servo_pwm.stop()
+        GPIO.cleanup()
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -95,11 +99,10 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        flywheel_pwm.stop()
-        servo_pwm.stop()
-        GPIO.cleanup()
+        node.cleanup()
         node.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
