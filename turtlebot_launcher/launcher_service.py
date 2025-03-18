@@ -80,7 +80,8 @@ class TurtleBotLauncher(Node):
 
         # Reset servo to 0 degrees
         self.ServoMove(servo_reset_angle)
-        time.sleep(flywheel_launch_time)  # Delay to allow servo to move
+        time.sleep(1)  # Delay to allow servo to move
+        self.servo_pwm.ChangeDutyCycle(0) # Turn off servo pwm to prevent jitter
 
         response.success = True
         response.message = "Ball launched!"
@@ -103,7 +104,6 @@ def main(args=None):
         node.cleanup()
         node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
