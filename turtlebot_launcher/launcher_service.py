@@ -7,8 +7,8 @@ from std_srvs.srv import Trigger  # Simple service with no request arguments
 import time
 
 # GPIO Pins
-FLYWHEEL_PWM = 12           # Single PWM control for both motors (wired in parallel)
-SERVO_PWM = 18              # Servo PWM control
+FLYWHEEL_PWM = 18           # Single PWM control for both motors (wired in parallel)
+SERVO_PWM = 12              # Servo PWM control
 
 # Motor Variables
 motor_pwm_freq = 1000       # PWM frequency for motor (e.g. 1000Hz)
