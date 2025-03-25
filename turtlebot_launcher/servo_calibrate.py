@@ -17,7 +17,7 @@ servo_pwm = GPIO.PWM(SERVO_PWM, servo_pwm_freq)
 
 servo_pwm.start(0)
 
-def ServoMove(self, angle):
+def ServoMove(angle):
     servo_duty = (angle / 180) * (servo_pwm_duty_upper - servo_pwm_duty_lower) + servo_pwm_duty_lower #scaling
     servo_pwm.ChangeDutyCycle(servo_duty)
 

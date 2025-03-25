@@ -1,5 +1,3 @@
-import rclpy
-from rclpy.node import Node
 import RPi.GPIO as GPIO
 import time
 
@@ -22,6 +20,8 @@ flywheel_spinup_time = 1    # Time needed to spin up flywheels
 flywheel_spindown_time = 1  # Time needed to slow down flywheels
 flywheel_launch_time = 0.5  # Time needed to launch ball
 
+flag = 0
+
 	# Initialize GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(FLYWHEEL_PWM, GPIO.OUT)
@@ -35,41 +35,48 @@ servo_pwm.start(0)
 
 #self.get_logger().info("TurtleBot Launcher service is ready!")
 
-def ServoMove(self, angle):
+def ServoMove(angle):
     servo_duty = (angle / 180) * (servo_pwm_duty_upper - servo_pwm_duty_lower) + servo_pwm_duty_lower
     servo_pwm.ChangeDutyCycle(servo_duty)
 
-def FlywheelStart(self):
+def FlywheelStart():
     flywheel_pwm.ChangeDutyCycle(motor_pwm_on_duty)
 
-def FlywheelStop(self):
+def FlywheelStop():
     flywheel_pwm.ChangeDutyCycle(0)
 
-# Reset servo just in case it's not at 0 degrees
-print("Resetting servo...")
-ServoMove(servo_reset_angle)
+for i in range(3):
+    # Reset servo just in case it's not at 0 degrees
+    print("Resetting servo...")
+    ServoMove(servo_reset_angle)
 
-# Start flywheel motors
-FlywheelStart()
+    # Start flywheel motors
+    FlywheelStart()
 
-# Wait for motors to reach speed
-print("Spinning up flywheels...")
-time.sleep(flywheel_spinup_time)
+    # Wait for motors to reach speed
+    print("Spinning up flywheels...")
+    time.sleep(flywheel_spinup_time)
 
-# Move servo to launch the ball
-print("Launching ball with servo...")
-ServoMove(servo_launch_angle)
-time.sleep(flywheel_launch_time)  # Delay to allow servo to move
+    # Move servo to launch the ball
+    print("Launching ball with servo...")
+    ServoMove(servo_launch_angle)
+    time.sleep(flywheel_launch_time)  # Delay to allow servo to move
 
-# Stop flywheels after launch
-print("Stopping flywheels...")
-FlywheelStop()
-time.sleep(flywheel_spindown_time)
+    # Stop flywheels after launch
+    print("Stopping flywheels...")
+    FlywheelStop()
+    time.sleep(flywheel_spindown_time)
 
-# Reset servo to 0 degrees
-ServoMove(servo_reset_angle)
-print("Resetting servo...")
-time.sleep(1)  # Delay to allow servo to move
+    # Reset servo to 0 degrees
+    ServoMove(servo_reset_angle)
+    print("Resetting servo...")
+    time.sleep(1)  # Delay to allow servo to move
+    
+    if flag = 1:
+        flag = 0
+        time.sleep(1)
+    else:
+        flag = 1
 
 # Clean up GPIO
 flywheel_pwm.stop()
