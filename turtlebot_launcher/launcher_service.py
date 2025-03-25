@@ -81,12 +81,13 @@ class TurtleBotLauncher(Node):
     def launch_ball_callback(self, request, response):
         self.get_logger().info("Received request to launch 3 balls!")
         self.LaunchBall()
-        response.message = "Ball 1 launched!"
+        self.get_logger().info("Ball 1 launched!")
         self.LaunchBall()
-        response.message = "Ball 2 launched!"
+        self.get_logger().info("Ball 2 launched!")
         time.sleep(1)
         self.LaunchBall()
-        response.message = "Ball 3 launched!"
+        self.get_logger().info("Ball 3 launched!")
+        response.message = "3 Balls launched!"
         response.success = True
         return response
 
