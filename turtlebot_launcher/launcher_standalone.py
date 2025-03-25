@@ -45,7 +45,7 @@ def FlywheelStart():
 def FlywheelStop():
     flywheel_pwm.ChangeDutyCycle(0)
 
-for i in range(3):
+def LaunchBall():
     # Reset servo just in case it's not at 0 degrees
     print("Resetting servo...")
     ServoMove(servo_reset_angle)
@@ -71,12 +71,11 @@ for i in range(3):
     ServoMove(servo_reset_angle)
     print("Resetting servo...")
     time.sleep(1)  # Delay to allow servo to move
-    
-    if flag = 1:
-        flag = 0
-        time.sleep(1)
-    else:
-        flag = 1
+
+LaunchBall()
+LaunchBall()
+time.sleep(1)
+LaunchBall()
 
 # Clean up GPIO
 flywheel_pwm.stop()

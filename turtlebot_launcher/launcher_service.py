@@ -25,7 +25,6 @@ flywheel_spinup_time = 1    # Time needed to spin up flywheels
 flywheel_spindown_time = 1  # Time needed to slow down flywheels
 flywheel_launch_time = 0.5  # Time needed to launch ball
 
-
 class TurtleBotLauncher(Node):
     def __init__(self):
         super().__init__('turtlebot_launcher_service')
@@ -56,9 +55,7 @@ class TurtleBotLauncher(Node):
     def FlywheelStop(self):
         self.flywheel_pwm.ChangeDutyCycle(0)
 
-    def launch_ball_callback(self, request, response):
-        self.get_logger().info("Received request to launch ball!")
-
+    def LaunchBall(self):
         # Reset servo just in case it's not at 0 degrees
         self.ServoMove(servo_reset_angle)
 
@@ -66,11 +63,9 @@ class TurtleBotLauncher(Node):
         self.FlywheelStart()
 
         # Wait for motors to reach speed
-        self.get_logger().info("Spinning up flywheels...")
         time.sleep(flywheel_spinup_time)
 
         # Move servo to launch the ball
-        self.get_logger().info("Launching ball with servo...")
         self.ServoMove(servo_launch_angle)
         time.sleep(flywheel_launch_time)  # Delay to allow servo to move
 
@@ -83,8 +78,16 @@ class TurtleBotLauncher(Node):
         time.sleep(1)  # Delay to allow servo to move
         self.servo_pwm.ChangeDutyCycle(0) # Turn off servo pwm to prevent jitter
 
+    def launch_ball_callback(self, request, response):
+        self.get_logger().info("Received request to launch 3 balls!")
+        self.LaunchBall()
+        response.message = "Ball 1 launched!"
+        self.LaunchBall()
+        response.message = "Ball 2 launched!"
+        time.sleep(1)
+        self.LaunchBall()
+        response.message = "Ball 3 launched!"
         response.success = True
-        response.message = "Ball launched!"
         return response
 
     def cleanup(self):
