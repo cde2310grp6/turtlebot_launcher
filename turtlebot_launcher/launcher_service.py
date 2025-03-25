@@ -19,8 +19,8 @@ servo_pwm_freq = 50         # PWM frequency for servo (e.g. 50Hz)
 servo_pwm_duty_lower = 1.5   # value to scale down to 0 degree (0-255) (default value: 1.5)
 servo_pwm_duty_upper = 8.4   # value to scale up to 180 degree (0-255) (default value: 8.4)
 
-servo_launch_angle = 50     # Angle to set servo to launch ball (0-180)
-servo_reset_angle = 0       # Angle to reset servo to (0-180)
+servo_launch_angle = 90     # Angle to set servo to launch ball (0-180)
+servo_reset_angle = 40      # Angle to reset servo to (0-180)
 flywheel_spinup_time = 1    # Time needed to spin up flywheels
 flywheel_spindown_time = 1  # Time needed to slow down flywheels
 flywheel_launch_time = 0.5  # Time needed to launch ball
