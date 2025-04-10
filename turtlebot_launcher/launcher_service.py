@@ -82,9 +82,9 @@ class TurtleBotLauncher(Node):
         self.get_logger().info("Received request to launch 3 balls!")
         self.LaunchBall()
         self.get_logger().info("Ball 1 launched!")
+        time.sleep(2)
         self.LaunchBall()
         self.get_logger().info("Ball 2 launched!")
-        time.sleep(2)
         self.LaunchBall()
         self.get_logger().info("Ball 3 launched!")
         response.message = "3 Balls launched!"
