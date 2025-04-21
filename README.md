@@ -34,6 +34,13 @@ colcon build --packages-select turtlebot_launcher
 ros2 run turtlebot_launcher launcher_service 
 ```
 
+## Calling the service
+For debugging purposes, it may be useful to be able to call the service via command line  
+Ensure the above service is running, afterwards in another terminal: 
+```
+ros2 service call /launch_ball std_srvs/srv/Trigger "{}"
+```
+
 # Updating:
 
 Enter the turtlebot_launcher folder and git pull
