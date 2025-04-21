@@ -77,11 +77,3 @@ cd ~/2310_workspace/src/turtlebot_launcher && git pull
 cd ~/2310_workspace && colcon build --packages-select turtlebot_launcher
 ```
 
-# Acknowledgements:
-* Instructors of CDE2310:
-    * Mr Chew Wanlong, Nicholas
-    * Mr Ee Wei Han, Eugene
-    * Mr Royston Shieh Teng Wei
-    * Mr Soh Eng Keng
-
-* Teaching Assistants of CDE2310
